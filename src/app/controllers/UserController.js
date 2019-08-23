@@ -76,7 +76,7 @@ class UserController {
       return __response.status(400).json({ error: 'Validation fails' });
     }
 
-    const { email, oldPassword } = __request.body;
+    const { email, oldPassword, password } = __request.body;
     const user = await User.findByPk(__request.userId);
 
     /**
@@ -93,10 +93,18 @@ class UserController {
     }
 
     /**
-     * Validate Password
+     * Validade if oldPassword is present and check if it is match with the
+     * user account.
+     * If password is filled, and oldPassword not, the method will return a error.
      */
-    if (oldPassword && (await user.passwordCorrect(oldPassword)) === false) {
-      return __response.status(401).json({ error: 'Password does not match' });
+    if (oldPassword) {
+      if ((await user.passwordCorrect(oldPassword)) === false) {
+        return __response
+          .status(401)
+          .json({ error: 'Password does not match', teste: oldPassword });
+      }
+    } else if (password && !oldPassword) {
+      return __response.json({ error: 'Old password must be filled!' });
     }
 
     const { id, name, email: userEmail } = await user.update(__request.body);
