@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+
 import User from '../models/Users';
 import authConfig from '../../config/auth';
 
@@ -21,6 +22,7 @@ class SessionController {
       return res.status(401).json({ error: 'Password does not match!' });
     }
     const { id, name } = user;
+
     /**
      * Session token + informations about user
      */
