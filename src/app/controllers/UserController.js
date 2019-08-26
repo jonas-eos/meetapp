@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+
 import User from '../models/Users';
 
 class UserController {
