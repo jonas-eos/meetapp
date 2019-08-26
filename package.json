@@ -2,7 +2,7 @@
   "name": "meetapp",
   "version": "1.0.0",
   "main": "index.js",
-  "author": "Jonas Evangelista <jonas.eos@outlook.com",
+  "author": "Jonas Evangelista <jonas.eos@outlook.com>",
   "license": "MID",
   "scripts": {
     "start": "nodemon src/server.js"
