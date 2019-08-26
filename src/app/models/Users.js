@@ -29,8 +29,8 @@ class User extends Model {
   /**
    * Validate password
    */
-  passwordCorrect(__password) {
-    return bcrypt.compare(__password, this.password_hash);
+  passwordCorrect(password) {
+    return bcrypt.compare(password, this.password_hash);
   }
 }
 
