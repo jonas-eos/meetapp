@@ -1,15 +1,19 @@
+/**
+ * @overview User controller
+ * This file controls all user-related business rules.
+ *
+ * @require yup
+ *
+ * @require models
+ */
 import * as Yup from 'yup';
 
 import User from '../models/Users';
 
 class UserController {
+  // POST :: /users
   async store(req, res) {
-    /**
-     * Setting fields properties
-     * name: required
-     * email: required, email
-     * Passowrd: required, min 6 character
-     */
+    // Yup setting to validate some rules
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string()
@@ -20,28 +24,20 @@ class UserController {
         .min(6),
     });
 
-    /**
-     * Validate if all schema is valid.
-     */
+    // Check if it is a valid schema.
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Validation fails!' });
     }
 
-    const userExist = await User.findOne({
-      where: { email: req.body.email },
-    });
+    const userExist = await User.findOne({ where: { email: req.body.email } });
 
-    /**
-     * Check if the e-mail already exists on database.
-     */
+    // Check if already exist a user on database.
     if (userExist) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'User already exists!' });
     }
 
-    /**
-     * Create a new user.
-     */
     const { id, name, email } = await User.create(req.body);
+
     return res.json({
       id,
       name,
@@ -49,17 +45,16 @@ class UserController {
     });
   }
 
+  // PUT :: /users
   async update(req, res) {
-    /**
-     * Setting fields properties
-     * Passowrd: required if oldPassowrd exist, min 6 character
-     * confirmPassword: required if Password and oldPassword exist
-     *    min 6 character.
-     */
+    // Yup setting to validate some rules
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
       oldPassword: Yup.string().min(6),
+      // .when('password', (password, field) =>
+      //   password ? field.required() : field
+      // ),
       password: Yup.string()
         .min(6)
         .when('oldPassword', (oldPassword, field) =>
@@ -70,9 +65,7 @@ class UserController {
       ),
     });
 
-    /**
-     * Validate request body.
-     */
+    // Check if it is a valid schema.
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
@@ -80,14 +73,11 @@ class UserController {
     const { email, oldPassword, password } = req.body;
     const user = await User.findByPk(req.userId);
 
-    /**
-     * Validate if email exist on body
-     * find user email on database
-     * return error if user email exist.
-     */
+    // Check if email in the req body is not equal as the user`s current email.
     if (email && email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
 
+      // Check if already exist a user.
       if (userExists) {
         return res.status(400).json({ error: 'User already exists.' });
       }

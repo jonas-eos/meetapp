@@ -1,7 +1,16 @@
+/**
+ * @overview User model
+ * This file controls the fields that will have database connection, and rules
+ * that are applied before change data in the DB.
+ *
+ * @require sequelize
+ * @require bcryptjs
+ */
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
 
 class User extends Model {
+  // Start sequelize methods.
   static init(sequelize) {
     super.init(
       {
@@ -15,19 +24,25 @@ class User extends Model {
       }
     );
 
-    /**
-     * Encrypt password before save
-     */
+    // Apply encryptation to the password before saving it to the database.
     this.addHook('beforeSave', async user => {
       if (user.password) {
         user.password_hash = await bcrypt.hash(user.password, 8);
       }
     });
+
     return this;
   }
 
   /**
-   * Validate password
+   * @method checkPassword
+   *
+   * @description
+   * Check if password match the user password_hash.
+   *
+   * @param password
+   *
+   * @return true || false
    */
   passwordCorrect(password) {
     return bcrypt.compare(password, this.password_hash);

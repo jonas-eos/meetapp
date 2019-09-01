@@ -1,3 +1,9 @@
+/**
+ * @overview database
+ *
+ * @description
+ * This file contains the database configurations.
+ */
 module.exports = {
   dialect: 'postgres',
   host: 'localhost',
