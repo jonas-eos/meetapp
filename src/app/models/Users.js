@@ -3,8 +3,8 @@
  * This file controls the fields that will have database connection, and rules
  * that are applied before change data in the DB.
  *
- * @require sequelize
- * @require bcryptjs
+ * @requires sequelize
+ * @requires bcryptjs
  */
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs';

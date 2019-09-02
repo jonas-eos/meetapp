@@ -7,7 +7,6 @@
  * @requires /app/models
  * @requires /app/validations/UserValidations
  */
-
 import User from '../models/Users';
 
 import UserValidations from '../validations/UserValidations';
@@ -15,6 +14,7 @@ import UserValidations from '../validations/UserValidations';
 class UserController {
   // POST :: /users
   async store(req, res) {
+    // Validate fields
     await UserValidations.validateStore(req);
 
     if (UserValidations.getError()) {
@@ -39,14 +39,14 @@ class UserController {
 
   // PUT :: /users
   async update(req, res) {
-    // Yup setting to validate some rules
-    await UserValidations.validateStore(req);
+    // Validate fields
+    await UserValidations.validateUpdate(req);
 
     if (UserValidations.getError()) {
       return UserValidations.sendError(res);
     }
 
-    const { email, oldPassword, password } = req.body;
+    const { email, oldPassword } = req.body;
     const user = await User.findByPk(req.userId);
 
     // Check if email in the req body is not equal as the user`s current email.
@@ -64,14 +64,8 @@ class UserController {
      * user account.
      * If password is filled, and oldPassword not, the method will return a error.
      */
-    if (oldPassword) {
-      if ((await user.passwordCorrect(oldPassword)) === false) {
-        return res
-          .status(401)
-          .json({ error: 'Password does not match', teste: oldPassword });
-      }
-    } else if (password && !oldPassword) {
-      return res.json({ error: 'Old password must be filled!' });
+    if ((await user.passwordCorrect(oldPassword)) === false) {
+      return res.status(401).json({ error: 'Password does not match' });
     }
 
     const { id, name, email: userEmail } = await user.update(req.body);

@@ -14,15 +14,15 @@ import jwt from 'jsonwebtoken';
 import authConfig from '../../config/auth';
 import User from '../models/Users';
 
-import UserValidations from '../validations/UserValidations';
+import SessionValidation from '../validations/SessionValidation';
 
 class SessionController {
   async store(req, res) {
-    // Set schema field validations
-    await UserValidations.validateStore(req);
+    // Validate fields.
+    await SessionValidation.validateStore(req);
 
-    if (UserValidations.getError()) {
-      return UserValidations.sendError(res);
+    if (SessionValidation.getError()) {
+      return SessionValidation.sendError(res);
     }
 
     const { email, password } = req.body;

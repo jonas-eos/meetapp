@@ -2,10 +2,10 @@
  * @overview database index
  * This file handles all database connections and communication with models.
  *
- * @require sequelize
+ * @requires sequelize
  *
- * @require config/database
- * @require app/models/ *
+ * @requires /config/database
+ * @requires /app/models/
  */
 import Sequelize from 'sequelize';
 

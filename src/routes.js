@@ -5,10 +5,10 @@
  * This file initializes the links between route controllers and the express
  * HTTP server.
  *
- * @require express
+ * @requires express
  *
- * @require app/middlewares/auth
- * @require app/controllers
+ * @requires /app/middlewares/auth
+ * @requires /app/controllers
  */
 import { Router } from 'express';
 

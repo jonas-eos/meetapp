@@ -10,10 +10,10 @@
  * the middleware is configured in {@link src/app.js}, and
  * server states in {@link src/server}
  *
- * @require express
+ * @requires express
  *
- * @require ./routes
- * @require ./database
+ * @requires ./routes
+ * @requires ./database
  *
  * @license MIT
  */

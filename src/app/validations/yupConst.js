@@ -1,7 +1,8 @@
 module.exports = Object.freeze({
   // ##MIXED
   DEFAULT: `\${path} é inválido`,
-  REQUIRE: `\${path} é inválida`,
+  REQUIRE: `\${path} é obrigatório`,
+  ONEOF: `\${path} deve ser igual à \${values}`,
 
   // ##STRING
   LENGTH: `\${path} deve ter exatamente \${length} caracteres`,

@@ -11,7 +11,7 @@
  * created_at: { date }
  * updated_at: { date }
  *
- * @require Sequelize
+ * @requires Sequelize
  */
 module.exports = {
   up: (queryInterface, Sequelize) => {

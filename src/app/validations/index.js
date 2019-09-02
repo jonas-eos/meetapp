@@ -36,6 +36,7 @@ class Validations {
       mixed: {
         default: constants.DEFAULT,
         required: constants.REQUIRE,
+        oneOf: constants.ONEOF,
       },
       string: {
         length: constants.LENGTH,

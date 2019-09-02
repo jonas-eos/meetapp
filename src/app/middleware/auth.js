@@ -2,10 +2,10 @@
  * @overview auth middleware
  * This file authenticates the header token.
  *
- * @require jsonwebtoken
- * @require util.promisify
+ * @requires jsonwebtoken
+ * @requires util.promisify
  *
- * @require app/config/auth
+ * @requires /app/config/auth
  */
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';

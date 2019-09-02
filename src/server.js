@@ -4,7 +4,7 @@
  *
  * The server stance configured  in {@link src/app}
  *
- * @require ./app
+ * @requires /app
  */
 import app from './app';
 
