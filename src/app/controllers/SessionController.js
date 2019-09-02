@@ -2,33 +2,27 @@
  * @overview Session controller
  * This file manupulate authentication and access token.
  *
- * @require jsonwebtoken
- * @require yup
+ * @requires jsonwebtoken
+ * @requires yup
  *
- * @require app/config/auth
- * @require /models/User
+ * @requires /app/config/auth
+ * @requires /app/models/Users
+ * @requires /app/validations/UserValidations
  */
 import jwt from 'jsonwebtoken';
-import * as Yup from 'yup';
 
 import authConfig from '../../config/auth';
 import User from '../models/Users';
 
+import UserValidations from '../validations/UserValidations';
+
 class SessionController {
   async store(req, res) {
     // Set schema field validations
-    const schema = Yup.object().shape({
-      email: Yup.string()
-        .email()
-        .required(),
-      password: Yup.string()
-        .required()
-        .min(6),
-    });
+    await UserValidations.validateStore(req);
 
-    // Validate request body.
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails!' });
+    if (UserValidations.getError()) {
+      return UserValidations.sendError(res);
     }
 
     const { email, password } = req.body;

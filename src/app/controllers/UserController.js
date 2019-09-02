@@ -2,31 +2,23 @@
  * @overview User controller
  * This file controls all user-related business rules.
  *
- * @require yup
+ * @requires yup
  *
- * @require models
+ * @requires /app/models
+ * @requires /app/validations/UserValidations
  */
-import * as Yup from 'yup';
 
 import User from '../models/Users';
+
+import UserValidations from '../validations/UserValidations';
 
 class UserController {
   // POST :: /users
   async store(req, res) {
-    // Yup setting to validate some rules
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required(),
-      password: Yup.string()
-        .required()
-        .min(6),
-    });
+    await UserValidations.validateStore(req);
 
-    // Check if it is a valid schema.
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails!' });
+    if (UserValidations.getError()) {
+      return UserValidations.sendError(res);
     }
 
     const userExist = await User.findOne({ where: { email: req.body.email } });
@@ -48,26 +40,10 @@ class UserController {
   // PUT :: /users
   async update(req, res) {
     // Yup setting to validate some rules
-    const schema = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string().email(),
-      oldPassword: Yup.string().min(6),
-      // .when('password', (password, field) =>
-      //   password ? field.required() : field
-      // ),
-      password: Yup.string()
-        .min(6)
-        .when('oldPassword', (oldPassword, field) =>
-          oldPassword ? field.required() : field
-        ),
-      confirmPassword: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field
-      ),
-    });
+    await UserValidations.validateStore(req);
 
-    // Check if it is a valid schema.
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+    if (UserValidations.getError()) {
+      return UserValidations.sendError(res);
     }
 
     const { email, oldPassword, password } = req.body;
