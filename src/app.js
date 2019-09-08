@@ -11,12 +11,14 @@
  * server states in {@link src/server}
  *
  * @requires express
+ * @requires dotenv/config
  *
  * @requires ./routes
  * @requires ./database
  *
  * @license MIT
  */
+import 'dotenv/config';
 import express from 'express';
 
 import routes from './routes';
@@ -32,6 +34,7 @@ class App {
    */
   constructor() {
     this.server = express();
+
     this.middlewares();
     this.routes();
   }
