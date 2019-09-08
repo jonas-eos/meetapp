@@ -14,6 +14,7 @@
  */
 import { startOfHour, isBefore, parseISO, addWeeks } from 'date-fns';
 import Meetup from '../models/Meetup';
+import File from '../models/Files';
 import MeetupValidations from '../validations/MeetupValidations';
 
 class MeetupController {
@@ -25,9 +26,10 @@ class MeetupController {
       return MeetupValidations.sendError(res);
     }
 
-    const { date } = req.body;
-
+    const { banner: banner_id, title, description, address, date } = req.body;
+    const organizer_id = req.userId;
     const hourStart = startOfHour(parseISO(date));
+
     // Check if start hour is two weeks in advance.
     if (isBefore(hourStart, addWeeks(new Date(), 2))) {
       return res
@@ -35,11 +37,26 @@ class MeetupController {
         .json({ error: 'You must create a meetup in two weeks in advance!' });
     }
 
-    return res.json({
-      body: req.body,
-      orginizer: req.userId,
-      hourstart: hourStart,
+    // Check if the banner exists
+    const banner = await File.findOne({
+      where: {
+        id: banner_id,
+      },
     });
+    if (!banner) {
+      return res.status(406).json({ error: 'This banner does not exists!' });
+    }
+
+    const meetup = await Meetup.create({
+      organizer_id,
+      banner_id,
+      title,
+      description,
+      address,
+      date: hourStart,
+    });
+
+    return res.json(meetup);
   }
 }
 

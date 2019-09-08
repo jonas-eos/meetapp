@@ -25,23 +25,17 @@ module.exports = {
       },
       organizer_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id',
-        },
+        references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+        allowNull: true,
       },
       banner_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'files',
-          key: 'id',
-        },
+        references: { model: 'files', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+        allowNull: true,
       },
       title: {
         type: Sequelize.STRING,
