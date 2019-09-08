@@ -58,6 +58,85 @@ class MeetupController {
 
     return res.json(meetup);
   }
+
+  async update(req, res) {
+    // Validate fields
+    await MeetupValidations.validateUpdate(req);
+
+    if (MeetupValidations.getError()) {
+      return MeetupValidations.sendError(res);
+    }
+
+    const { id } = req.params;
+    const organizer = req.userId;
+
+    // Find event by ID
+    const meetup = await Meetup.findByPk(id);
+
+    // Check if event exists
+    if (!meetup) {
+      return res.status(400).json({ error: 'This event does not exists!' });
+    }
+
+    // Check if the user is the event organizer
+    if (meetup.organizer_id !== organizer) {
+      return res
+        .status(403)
+        .json({ error: 'You do not have permission to change this event!' });
+    }
+
+    // Get values from body
+    let { title, description, banner, address } = req.body;
+    const { date } = req.body;
+
+    // Get meetupDate
+    const meetupDate = startOfHour(Number(meetup.date));
+
+    // Check if the event can be changed
+    if (!isBefore(addWeeks(new Date(), 2), meetupDate)) {
+      return res.status(400).json({
+        error: 'You can only change the meetup date in two weeks in advance!',
+      });
+    }
+
+    // Get new date if exists
+    const meetupNewDate = startOfHour(parseISO(date));
+
+    // Check if the new date is a valid date.
+    if (isBefore(meetupNewDate, addWeeks(new Date(), 2))) {
+      return res.status(400).json({
+        error: 'The new date must be in two weeks in advance!',
+      });
+    }
+
+    /**
+     * Validate if the field are blank, then get the field from database
+     * This prevent crash on update blank values
+     */
+    if (!title) {
+      title = meetup.title;
+    }
+    if (!description) {
+      description = meetup.description;
+    }
+    if (!banner) {
+      banner = meetup.banner_id;
+    }
+    if (!address) {
+      address = meetup.address;
+    }
+
+    // Update meetup
+    await meetup.update({
+      title,
+      description,
+      date,
+      banner_id: banner,
+      address,
+    });
+
+    return res.json(meetup);
+  }
 }
 
 export default new MeetupController();
