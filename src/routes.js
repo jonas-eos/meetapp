@@ -16,6 +16,7 @@ import authMiddleware from './app/middleware/auth';
 
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
+import FileController from './app/controllers/FileController';
 
 const routes = new Router();
 
@@ -25,5 +26,7 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
+
+routes.post('/files', FileController.create);
 
 export default routes;
