@@ -33,7 +33,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      banner: {
+      banner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
