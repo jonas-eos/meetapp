@@ -2,22 +2,52 @@
  * @overview Meetup Controller
  * This is the Meetup controller.
  *
+ * Show all event to the current user token. Will be listed 5 events per page.
+ *
  * To create a new meetup, the organizer must inform some requires field that is
  * required in File Validation {@link/validations/FileValidations}
  * After that, the meetup date pass to a new validation, and the event data must
  * be 2 weeks on advance from today.
  *
- * @requires app/models
+ * To update an event, is only allowed if you are changing the event with two
+ * weeks of attention.
  *
+ * @requires date-fns
+ *
+ * @requires app/models *
  * @requires app/validatons/FileValidations
  *
  */
 import { startOfHour, isBefore, parseISO, addWeeks } from 'date-fns';
+import { Op } from 'sequelize';
+
 import Meetup from '../models/Meetup';
 import File from '../models/Files';
 import MeetupValidations from '../validations/MeetupValidations';
 
 class MeetupController {
+  async index(req, res) {
+    const page = req.query.page || 1;
+
+    const meetups = await Meetup.findAll({
+      where: {
+        organizer_id: req.userId,
+        date: { [Op.gt]: new Date() },
+      },
+      include: [
+        {
+          model: File,
+          as: 'banner',
+          attributes: ['url'],
+        },
+      ],
+      limit: 5,
+      offset: 5 * page - 5,
+    });
+
+    return res.json(meetups);
+  }
+
   async store(req, res) {
     // Validate fields
     await MeetupValidations.validateStore(req);

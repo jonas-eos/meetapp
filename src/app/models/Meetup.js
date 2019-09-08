@@ -42,10 +42,7 @@ class Meetup extends Model {
       foreingKey: 'organizer_id',
       as: 'organizer',
     });
-    this.belongsTo(models.File, {
-      foreignKey: 'banner_id',
-      as: 'banner',
-    });
+    this.belongsTo(models.File, { foreignKey: 'banner_id', as: 'banner' });
   }
 }
 
