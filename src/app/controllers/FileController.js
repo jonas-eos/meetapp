@@ -1,5 +1,5 @@
 class FileController {
-  async create(req, res) {
+  async store(req, res) {
     return res.json();
   }
 }

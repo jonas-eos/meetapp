@@ -27,6 +27,6 @@ routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
 
-routes.post('/files', FileController.create);
+routes.post('/files', FileController.store);
 
 export default routes;
