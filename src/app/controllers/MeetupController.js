@@ -20,7 +20,6 @@
  *
  * @requires app/models *
  * @requires app/validatons/FileValidations
- *
  */
 import { startOfHour, isBefore, parseISO, addWeeks } from 'date-fns';
 import { Op } from 'sequelize';
