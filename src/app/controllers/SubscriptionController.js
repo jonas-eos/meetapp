@@ -13,14 +13,16 @@
  * @requires app/models/Meetup
  * @requires app/models/Subscription
  * @requires app/models/User
+ * @requires src/lib/Queue
+ * @requires app/jobs/SubscriptionMail
  */
 import { isBefore } from 'date-fns';
 
-// import { format } from 'path';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscriptions';
 import User from '../models/Users';
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import SubscriptionMail from '../jobs/SubscriptionMail';
 
 class SubscriptionController {
   // POST :: '/meetups/:id/subscribe'
@@ -60,7 +62,7 @@ class SubscriptionController {
       });
     }
 
-    const subscription = await Subscription.findOne({
+    let subscription = await Subscription.findOne({
       where: { meetup_id, user_id },
     });
 
@@ -93,25 +95,41 @@ class SubscriptionController {
     }
 
     // Create a subscription
-    // const subscriptionStatus = await Subscription.create({
-    //   meetup_id: meetup.organizer_id,
-    //   user_id,
-    // });
-
-    const sts = await Mail.sendMail({
-      to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
-      subject: 'New user subscription notification',
-      template: 'subscription',
-      context: {
-        organizer: meetup.organizer.name,
-        title: meetup.title,
-        user: req.userId,
-        email: req.userId,
-        // date: format(Number(meetup.date), "MMMM dd 'at' h:mm a"),
-      },
+    const subscriptionStatus = await Subscription.create({
+      meetup_id: meetup.id,
+      user_id,
     });
 
-    return res.json(sts);
+    // Get return from subscription
+    subscription = await Subscription.findOne({
+      where: { id: subscriptionStatus.id },
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          include: [
+            {
+              model: User,
+              as: 'organizer',
+              attributes: ['name', 'email'],
+            },
+          ],
+          attributes: ['date', 'title'],
+        },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
+
+    // Send mail
+    await Queue.add(SubscriptionMail.key, {
+      subscription,
+    });
+
+    return res.json(subscription);
   }
 }
 
