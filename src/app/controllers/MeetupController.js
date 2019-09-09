@@ -12,7 +12,11 @@
  * To update an event, is only allowed if you are changing the event with two
  * weeks of attention.
  *
+ * To delete an event, the user must be the meetup organizer, and must be with
+ * two weeks of attention.
+ *
  * @requires date-fns
+ * @requires sequelize
  *
  * @requires app/models *
  * @requires app/validatons/FileValidations
