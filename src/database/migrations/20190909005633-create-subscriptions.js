@@ -22,7 +22,7 @@ module.exports = {
       },
       meetup_id: {
         type: Sequelize.INTEGER,
-        reference: {
+        references: {
           model: 'meetups',
           key: 'id',
         },
@@ -32,7 +32,7 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        reference: {
+        references: {
           model: 'users',
           key: 'id',
         },
@@ -44,7 +44,7 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      canceled_at: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
       },
