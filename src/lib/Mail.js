@@ -29,6 +29,7 @@ class Mail {
    *
    * @param message
    *
+   * @return {object} message content
    */
   sendMail(message) {
     return this.transport.sendMail({

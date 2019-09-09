@@ -12,11 +12,13 @@
  *
  * @requires app/models/Meetup
  * @requires app/models/Subscription
+ * @requires app/models/User
  */
 import { isBefore } from 'date-fns';
 
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscriptions';
+import User from '../models/Users';
 
 class SubscriptionController {
   // POST :: '/meetups/:id/subscribe'
@@ -28,6 +30,13 @@ class SubscriptionController {
       where: {
         id: meetup_id,
       },
+      include: [
+        {
+          model: User,
+          as: 'organizer',
+          attributes: ['name', 'email'],
+        },
+      ],
     });
 
     // Check if the event exists
