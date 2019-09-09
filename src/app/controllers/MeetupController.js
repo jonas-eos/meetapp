@@ -167,6 +167,32 @@ class MeetupController {
 
     return res.json(meetup);
   }
+
+  async destroy(req, res) {
+    const organizer = req.userId;
+    const meetup = await Meetup.findByPk(req.params.id);
+
+    if (!meetup) {
+      return res.status(404).json({ error: 'Event does not exist!' });
+    }
+
+    if (isBefore(Number(meetup.date), Number(new Date()))) {
+      return res
+        .status(400)
+        .json({ error: 'You can not cancel a past event!' });
+    }
+
+    if (!meetup)
+      if (meetup.organizer_id !== organizer) {
+        return res.status(401).json({
+          error: 'You can only cancel event in which you are the organizer',
+        });
+      }
+
+    await meetup.destroy();
+
+    return res.send();
+  }
 }
 
 export default new MeetupController();
