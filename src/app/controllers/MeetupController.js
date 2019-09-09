@@ -30,6 +30,7 @@ import File from '../models/Files';
 import MeetupValidations from '../validations/MeetupValidations';
 
 class MeetupController {
+  // GET :: /meetups
   async index(req, res) {
     const page = req.query.page || 1;
 
@@ -52,6 +53,7 @@ class MeetupController {
     return res.json(meetups);
   }
 
+  // POST :: /meetups
   async store(req, res) {
     // Validate fields
     await MeetupValidations.validateStore(req);
@@ -93,6 +95,7 @@ class MeetupController {
     return res.json(meetup);
   }
 
+  // PUT :: /meetups/:id
   async update(req, res) {
     // Validate fields
     await MeetupValidations.validateUpdate(req);
@@ -172,6 +175,7 @@ class MeetupController {
     return res.json(meetup);
   }
 
+  // DELETE :: /meetups/:id
   async destroy(req, res) {
     const organizer = req.userId;
     const meetup = await Meetup.findByPk(req.params.id);
