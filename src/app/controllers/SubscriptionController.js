@@ -16,9 +16,11 @@
  */
 import { isBefore } from 'date-fns';
 
+// import { format } from 'path';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscriptions';
 import User from '../models/Users';
+import Mail from '../../lib/Mail';
 
 class SubscriptionController {
   // POST :: '/meetups/:id/subscribe'
@@ -91,12 +93,25 @@ class SubscriptionController {
     }
 
     // Create a subscription
-    const subscriptionStatus = await Subscription.create({
-      meetup_id: meetup.organizer_id,
-      user_id,
+    // const subscriptionStatus = await Subscription.create({
+    //   meetup_id: meetup.organizer_id,
+    //   user_id,
+    // });
+
+    const sts = await Mail.sendMail({
+      to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
+      subject: 'New user subscription notification',
+      template: 'subscription',
+      context: {
+        organizer: meetup.organizer.name,
+        title: meetup.title,
+        user: req.userId,
+        email: req.userId,
+        // date: format(Number(meetup.date), "MMMM dd 'at' h:mm a"),
+      },
     });
 
-    return res.json(subscriptionStatus);
+    return res.json(sts);
   }
 }
 

@@ -7,6 +7,6 @@ export default {
     pass: process.env.MAIL_PASS,
   },
   default: {
-    from: 'Teste <noreply@teste.com>',
+    from: 'Meetaap Staff <noreply@metapp.com>',
   },
 };
