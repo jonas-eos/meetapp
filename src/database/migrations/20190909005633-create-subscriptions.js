@@ -1,14 +1,11 @@
 /**
- * @overview create table: meetups
+ * @overview create table: subscriptions
  *
  * @description
  * This file create user table with fields:
  * ID: { Integer, autoIncrement, PK }
- * organizer_id: { Integer, Relation with user:id }
- * banner: { Integer, relation with files:id }
- * title: { String }
- * description: { Text }
- * date: { date }
+ * meetup_id: { Integer, Relation with meetups:id }
+ * user_id: { Integer, Relation with users:id }
  * created_at: { date }
  * updated_at: { date }
  *
@@ -16,41 +13,31 @@
  */
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('meetups', {
+    return queryInterface.createTable('subscriptions', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      organizer_id: {
+      meetup_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' },
+        references: {
+          model: 'meetups',
+          key: 'id',
+        },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         allowNull: false,
       },
-      banner_id: {
+      user_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'files', key: 'id' },
+        references: {
+          model: 'users',
+          key: 'id',
+        },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-        allowNull: false,
-      },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      address: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      date: {
-        type: Sequelize.DATE,
         allowNull: false,
       },
       created_at: {
@@ -65,6 +52,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('meetups');
+    return queryInterface.dropTable('subscriptions');
   },
 };
