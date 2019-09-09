@@ -25,6 +25,11 @@ import Queue from '../../lib/Queue';
 import SubscriptionMail from '../jobs/SubscriptionMail';
 
 class SubscriptionController {
+  // GET :: /subscriptions
+  async index(req, res) {
+    return res.send();
+  }
+
   // POST :: '/meetups/:id/subscribe'
   async store(req, res) {
     const { userId: user_id } = req;
