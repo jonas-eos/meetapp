@@ -2,6 +2,8 @@
  * @overview Subscription Controller
  * This is the Subscription controller.
  *
+ * Show current user, all your subscriptions
+ *
  * subscribe the actual user to the meetup, the meetup is defined on id params.
  * The user cannot subscribe to an event that has already happened.
  * The user cannot subscribe to an event that is already subscribed.
@@ -9,22 +11,58 @@
  * The user cannot subscribe in more then one event in the same day.
  *
  * @requires date-fns
+ * @requires sequelize
  *
  * @requires app/models/Meetup
- * @requires app/models/Subscription
- * @requires app/models/User
+ * @requires app/models/Subscriptions
+ * @requires app/models/Users
+ * @requires app/models/Files
  * @requires src/lib/Queue
  * @requires app/jobs/SubscriptionMail
  */
 import { isBefore } from 'date-fns';
+import { Op } from 'sequelize';
 
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscriptions';
 import User from '../models/Users';
+import File from '../models/Files';
 import Queue from '../../lib/Queue';
 import SubscriptionMail from '../jobs/SubscriptionMail';
 
 class SubscriptionController {
+  // GET :: /subscriptions
+  async index(req, res) {
+    const subscriptions = await Subscription.findAll({
+      where: { user_id: req.userId },
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          where: {
+            date: { [Op.gt]: new Date() },
+          },
+          attributes: ['title', 'description', 'address', 'date'],
+          include: [
+            {
+              model: File,
+              as: 'banner',
+              attributes: ['url'],
+            },
+            {
+              model: User,
+              as: 'organizer',
+              attributes: ['name', 'email'],
+            },
+          ],
+        },
+      ],
+      order: [['meetup', 'date']],
+    });
+
+    return res.json(subscriptions);
+  }
+
   // POST :: '/meetups/:id/subscribe'
   async store(req, res) {
     const { userId: user_id } = req;
