@@ -21,7 +21,7 @@
  * @requires app/models *
  * @requires app/validatons/FileValidations
  */
-import { startOfHour, isBefore, parseISO, addWeeks } from 'date-fns';
+import { startOfHour, isBefore, parseISO, addHours } from 'date-fns';
 import { Op } from 'sequelize';
 
 import Meetup from '../models/Meetup';
@@ -65,11 +65,11 @@ class MeetupController {
     const organizer_id = req.userId;
     const hourStart = startOfHour(parseISO(date));
 
-    // Check if start hour is two weeks in advance.
-    if (isBefore(hourStart, addWeeks(new Date(), 2))) {
+    // Check if start hour is one hour in advance.
+    if (isBefore(hourStart, addHours(new Date(), 1))) {
       return res
         .status(400)
-        .json({ error: 'You must create a meetup in two weeks in advance!' });
+        .json({ error: 'You must create a meetup in one hour in advance!' });
     }
 
     // Check if the banner exists
