@@ -129,9 +129,9 @@ class MeetupController {
     const meetupDate = startOfHour(Number(meetup.date));
 
     // Check if the event can be changed
-    if (!isBefore(addWeeks(new Date(), 2), meetupDate)) {
+    if (!isBefore(addHours(new Date(), 1), meetupDate)) {
       return res.status(400).json({
-        error: 'You can only change the meetup date in two weeks in advance!',
+        error: 'You can only change the meetup date in one hour in advance!',
       });
     }
 
@@ -139,9 +139,9 @@ class MeetupController {
     const meetupNewDate = startOfHour(parseISO(date));
 
     // Check if the new date is a valid date.
-    if (isBefore(meetupNewDate, addWeeks(new Date(), 2))) {
+    if (isBefore(meetupNewDate, addHours(new Date(), 1))) {
       return res.status(400).json({
-        error: 'The new date must be in two weeks in advance!',
+        error: 'The new date must be in one hour in advance!',
       });
     }
 
