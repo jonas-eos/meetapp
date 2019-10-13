@@ -7,13 +7,12 @@
  * To create a new meetup, the organizer must inform some requires field that is
  * required in File Validation {@link/validations/FileValidations}
  * After that, the meetup date pass to a new validation, and the event data must
- * be 2 weeks on advance from today.
+ * be 1 hour on advance from today.
  *
  * To update an event, is only allowed if you are changing the event with two
  * weeks of attention.
  *
- * To delete an event, the user must be the meetup organizer, and must be with
- * two weeks of attention.
+ * To delete an event, the user must be the meetup organizer.
  *
  * @requires date-fns
  * @requires sequelize
