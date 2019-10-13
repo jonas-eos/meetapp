@@ -26,7 +26,9 @@ class SessionController {
     }
 
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+    });
 
     //  Check if user exists.
     if (!user) {

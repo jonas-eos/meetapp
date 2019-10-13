@@ -171,7 +171,17 @@ class MeetupController {
       address,
     });
 
-    return res.json(meetup);
+    const { banner_url } = await Meetup.findByPk(id, {
+      include: [
+        {
+          model: File,
+          as: 'banner',
+          attributes: ['url'],
+        },
+      ],
+    });
+
+    return res.json(meetup, banner_url);
   }
 
   // DELETE :: /meetups/:id
